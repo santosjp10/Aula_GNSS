@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#1C2A24">
 <title>Marco — levantamento GNSS</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -38,7 +38,7 @@
 *,*::before,*::after{box-sizing:inherit}
 html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px);-webkit-text-size-adjust:100%}
 body{height:100%;margin:0;background:var(--ground);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.4;
-  display:grid;grid-template-rows:auto 1fr auto;overflow:hidden;-webkit-tap-highlight-color:transparent;overscroll-behavior:none}
+  display:grid;grid-template-rows:auto 1fr auto;overflow:hidden;-webkit-tap-highlight-color:transparent;overscroll-behavior:none;touch-action:manipulation}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
 button,input,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer;border:0;background:none;padding:0}
@@ -76,12 +76,16 @@ main{position:relative;overflow:hidden;min-height:0}
 #adv span{color:var(--ink2)}
 #adv b{font-family:var(--font-c);font-size:17px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #cross{position:absolute;left:50%;top:50%;width:44px;height:44px;margin:-22px 0 0 -22px;pointer-events:none;z-index:1}
+#baseChip{position:absolute;left:50%;transform:translateX(-50%);top:10px;z-index:3;background:var(--surface);border:1px solid var(--fair);color:var(--ink);font-size:13px;font-weight:600;padding:8px 14px;border-radius:999px;box-shadow:0 2px 8px rgba(0,0,0,.15);white-space:nowrap;max-width:calc(100% - 20px);overflow:hidden;text-overflow:ellipsis}
+#adv:not([hidden]) ~ #baseChip{top:auto;bottom:calc(var(--dockH,200px) + 100px)}
+.zgrp{display:flex;flex-direction:column;border-radius:14px;overflow:hidden;border:1px solid var(--line);box-shadow:0 2px 6px rgba(0,0,0,.12)}
+.zgrp .mbtn{border:0;border-radius:0;box-shadow:none}.zgrp .mbtn+.mbtn{border-top:1px solid var(--line)}
 #mapbtns{position:absolute;right:10px;bottom:calc(var(--dockH,200px) + 12px);display:flex;flex-direction:column;gap:8px;z-index:2}
 .mbtn{width:48px;height:48px;border-radius:14px;background:var(--surface);border:1px solid var(--line);display:grid;place-items:center;box-shadow:0 2px 6px rgba(0,0,0,.12)}
 .mbtn svg{width:24px;height:24px}
 .mbtn[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
-#scale{position:absolute;left:10px;bottom:calc(var(--dockH,200px) + 12px);font-size:12px;font-weight:600;z-index:2;pointer-events:none;background:color-mix(in srgb,var(--surface) 85%,transparent);padding:2px 6px 4px;border-radius:6px}
-#attr{position:absolute;right:66px;bottom:calc(var(--dockH,200px) + 6px);font-size:10px;line-height:1.3;color:var(--ink2);background:color-mix(in srgb,var(--surface) 82%,transparent);padding:1px 6px;border-radius:6px;z-index:2;pointer-events:none;max-width:58%;text-align:right}
+#scale{position:absolute;left:10px;bottom:calc(var(--dockH,200px) + 26px);font-size:12px;font-weight:600;z-index:2;pointer-events:none;background:color-mix(in srgb,var(--surface) 85%,transparent);padding:2px 6px 4px;border-radius:6px}
+#attr{position:absolute;left:10px;bottom:calc(var(--dockH,200px) + 6px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:calc(100% - 84px) !important;font-size:10px;line-height:1.3;color:var(--ink2);background:color-mix(in srgb,var(--surface) 82%,transparent);padding:1px 6px;border-radius:6px;z-index:2;pointer-events:none;max-width:58%;text-align:right}
 .bases{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px}
 .basebtn{text-align:left;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--surface2);min-height:62px}
 .basebtn strong{display:block;font-weight:600}
@@ -93,7 +97,7 @@ main{position:relative;overflow:hidden;min-height:0}
 .ovh{display:flex;align-items:center;gap:6px}.ovh strong{flex:1;min-width:0;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ovr{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--ink2);margin-top:6px}.ovr input{flex:1;accent-color:var(--ink)}
 #scale i{display:block;height:6px;border:2px solid var(--ink);border-top:0;margin-top:2px}
-#north{position:absolute;left:12px;bottom:calc(var(--dockH,200px) + 44px);width:28px;height:28px;z-index:2;pointer-events:none}
+#north{position:absolute;left:12px;bottom:calc(var(--dockH,200px) + 66px);width:28px;height:28px;z-index:2;pointer-events:none}
 
 /* dock */
 #dock{position:absolute;left:0;right:0;bottom:0;padding:10px 10px 12px;z-index:3;display:flex;flex-direction:column;gap:8px;
@@ -244,9 +248,11 @@ textarea.i{min-height:120px;font-variant-numeric:tabular-nums}
     <div class="simtag" id="simtag" hidden>GNSS simulado</div>
     <div id="stk" hidden></div>
     <svg id="north" viewBox="0 0 28 28" aria-hidden="true"><path d="M14 2 21 22 14 18 7 22Z" fill="var(--ink)"/><text x="14" y="15" text-anchor="middle" font-size="7" font-weight="700" fill="var(--surface)" font-family="Barlow">N</text></svg>
+    <button id="baseChip" hidden>Sem mapa online · base offline ▸</button>
     <div id="attr" hidden></div>
     <div id="scale" class="num"><span id="scaleTxt"></span><i id="scaleBar"></i></div>
     <div id="mapbtns">
+      <div class="zgrp"><button class="mbtn" id="bZin" aria-label="Aproximar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button><button class="mbtn" id="bZout" aria-label="Afastar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14"/></svg></button></div>
       <button class="mbtn" id="bFollow" aria-pressed="true" aria-label="Centralizar na posição"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg></button>
       <button class="mbtn" id="bFit" aria-label="Ver todas as feições"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/></svg></button>
       <button class="mbtn" id="bMeasure" aria-pressed="false" aria-label="Medir no mapa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 17 17 3l4 4L7 21z"/><path d="m7 13 2 2m1-5 2 2m1-5 2 2"/></svg></button>
@@ -537,7 +543,7 @@ setInterval(updGNSS,5000);
    Mapa (canvas, sem tiles: funciona 100% offline)
    ============================================================ */
 const cv=$('#map'),ctx=cv.getContext('2d');
-let W=1,H=1,DPR=1,isDirty=true,COL={};
+let W=1,H=1,DPR=1,isDirty=false,COL={};
 const V={cx:0,cy:0,s:2,follow:true,ready:false};
 function readColors(){const cs=getComputedStyle(document.documentElement);['ground','surface','ink','ink2','line','grid','pos','poor','good','fair','signal','feat'].forEach(k=>COL[k]=cs.getPropertyValue('--'+k).trim());dirty();}
 function resize(){const r=cv.getBoundingClientRect();DPR=Math.min(window.devicePixelRatio||1,S.battery?1.5:2.5);W=Math.max(1,r.width);H=Math.max(1,r.height);cv.width=Math.round(W*DPR);cv.height=Math.round(H*DPR);dirty();}
@@ -615,23 +621,58 @@ function onGNSSUpdate(){
   if(SO)updStake();
   updGNSS();dirty();
 }
-/* gestos */
-const PT=new Map();let gest=null,lpT=null;
-cv.addEventListener('pointerdown',e=>{cv.setPointerCapture(e.pointerId);PT.set(e.pointerId,{x:e.offsetX,y:e.offsetY});
-  if(PT.size===1){gest={t:Date.now(),x:e.offsetX,y:e.offsetY,cx:V.cx,cy:V.cy,moved:false};clearTimeout(lpT);lpT=setTimeout(()=>{if(gest&&!gest.moved){gest.long=true;longPress(gest.x,gest.y);}},600);}
-  else if(PT.size===2){clearTimeout(lpT);const [a,b]=[...PT.values()];gest={pinch:true,d:Math.hypot(a.x-b.x,a.y-b.y),s:V.s,m:s2w((a.x+b.x)/2,(a.y+b.y)/2),moved:true};}
+/* gestos: arrastar, pinça (dois dedos), duplo toque, toque com dois dedos e roda do mouse */
+const PT=new Map();let gest=null,lpT=null,lastTap={t:0,x:0,y:0};
+const cpos=e=>{const r=cv.getBoundingClientRect();return {x:e.clientX-r.left,y:e.clientY-r.top};};
+function startPinch(){const [a,b]=[...PT.values()];gest={pinch:true,d:Math.max(12,Math.hypot(a.x-b.x,a.y-b.y)),s:V.s,mx:(a.x+b.x)/2,my:(a.y+b.y)/2,m:s2w((a.x+b.x)/2,(a.y+b.y)/2),t:Date.now(),moved:false};}
+cv.addEventListener('pointerdown',e=>{
+  if(e.pointerType==='mouse'&&e.button!==0)return;
+  e.preventDefault();try{cv.setPointerCapture(e.pointerId);}catch(_){}
+  stopAnim();PT.set(e.pointerId,cpos(e));
+  if(PT.size===1){const p=cpos(e);gest={t:Date.now(),x:p.x,y:p.y,cx:V.cx,cy:V.cy,moved:false};clearTimeout(lpT);lpT=setTimeout(()=>{if(gest&&!gest.pinch&&!gest.moved&&PT.size===1){gest.long=true;longPress(gest.x,gest.y);}},600);}
+  else if(PT.size===2){clearTimeout(lpT);startPinch();}
 });
-cv.addEventListener('pointermove',e=>{if(!PT.has(e.pointerId)||!gest)return;PT.set(e.pointerId,{x:e.offsetX,y:e.offsetY});
-  if(gest.pinch&&PT.size===2){const [a,b]=[...PT.values()];const d=Math.hypot(a.x-b.x,a.y-b.y),mx=(a.x+b.x)/2,my=(a.y+b.y)/2;V.s=clamp(gest.s*d/gest.d,0.0002,400);V.cx=gest.m[0]-(mx-W/2)/V.s;V.cy=gest.m[1]+(my-H/2)/V.s;setFollow(false);dirty();}
-  else if(!gest.pinch){const dx=e.offsetX-gest.x,dy=e.offsetY-gest.y;if(Math.hypot(dx,dy)>8)gest.moved=true;if(gest.moved){V.cx=gest.cx-dx/V.s;V.cy=gest.cy+dy/V.s;setFollow(false);dirty();}}
+cv.addEventListener('pointermove',e=>{
+  if(!PT.has(e.pointerId)||!gest)return;e.preventDefault();PT.set(e.pointerId,cpos(e));
+  if(gest.pinch){if(PT.size<2)return;const [a,b]=[...PT.values()];const d=Math.hypot(a.x-b.x,a.y-b.y),mx=(a.x+b.x)/2,my=(a.y+b.y)/2;
+    if(!gest.moved&&(Math.abs(d-gest.d)>8||Math.hypot(mx-gest.mx,my-gest.my)>8))gest.moved=true;
+    if(!gest.moved)return;
+    V.s=clamp(gest.s*d/gest.d,0.0002,400);V.cx=gest.m[0]-(mx-W/2)/V.s;V.cy=gest.m[1]+(my-H/2)/V.s;setFollow(false);dirty();}
+  else{const p=cpos(e),dx=p.x-gest.x,dy=p.y-gest.y;if(!gest.moved&&Math.hypot(dx,dy)>8){gest.moved=true;clearTimeout(lpT);}
+    if(gest.moved){V.cx=gest.cx-dx/V.s;V.cy=gest.cy+dy/V.s;setFollow(false);dirty();}}
 });
-let lastTap=0;
-function endPtr(e){if(!PT.has(e.pointerId))return;PT.delete(e.pointerId);clearTimeout(lpT);
-  if(gest&&!gest.pinch&&!gest.moved&&!gest.long&&PT.size===0){const now=Date.now();if(now-lastTap<300){zoomAt(e.offsetX,e.offsetY,2);lastTap=0;}else{lastTap=now;tapAt(e.offsetX,e.offsetY);}}
-  if(PT.size===0)gest=null;}
+function endPtr(e){
+  if(!PT.has(e.pointerId))return;const p=cpos(e);PT.delete(e.pointerId);clearTimeout(lpT);
+  if(!gest)return;
+  if(e.type==='pointercancel'){if(!PT.size)gest=null;return;}
+  if(gest.pinch){
+    const twoTap=!gest.moved&&Date.now()-gest.t<350;
+    if(PT.size===1){const [r]=[...PT.values()];gest={t:Date.now(),x:r.x,y:r.y,cx:V.cx,cy:V.cy,moved:true,twoTap};} // continua arrastando com o dedo que ficou
+    else if(!PT.size)gest=null;
+    return;}
+  if(PT.size)return;
+  if(gest.twoTap){if(Date.now()-gest.t<300)animZoom(W/2,H/2,0.5);gest=null;return;} // toque com dois dedos: afasta
+  if(!gest.moved&&!gest.long){const now=Date.now();
+    if(now-lastTap.t<320&&Math.hypot(p.x-lastTap.x,p.y-lastTap.y)<40){animZoom(p.x,p.y,2);lastTap.t=0;} // duplo toque: aproxima
+    else{lastTap={t:now,x:p.x,y:p.y};tapAt(p.x,p.y);}}
+  gest=null;
+}
 cv.addEventListener('pointerup',endPtr);cv.addEventListener('pointercancel',endPtr);
-cv.addEventListener('wheel',e=>{e.preventDefault();zoomAt(e.offsetX,e.offsetY,Math.exp(-e.deltaY*0.0015));},{passive:false});
+// impede que o navegador (ou o app que hospeda a página) trate a pinça como zoom da página
+['touchstart','touchmove'].forEach(ev=>cv.addEventListener(ev,e=>{if(e.cancelable)e.preventDefault();},{passive:false}));
+['gesturestart','gesturechange','gestureend'].forEach(ev=>document.addEventListener(ev,e=>e.preventDefault(),{passive:false}));
+cv.addEventListener('contextmenu',e=>e.preventDefault());
+cv.addEventListener('wheel',e=>{e.preventDefault();const p=cpos(e);zoomAt(p.x,p.y,Math.exp(-e.deltaY*(e.ctrlKey?0.01:0.0015)));},{passive:false});
 function zoomAt(px,py,k){const w=s2w(px,py);V.s=clamp(V.s*k,0.0002,400);V.cx=w[0]-(px-W/2)/V.s;V.cy=w[1]+(py-H/2)/V.s;setFollow(false);dirty();}
+let zAnim=null;function stopAnim(){if(zAnim){cancelAnimationFrame(zAnim);zAnim=null;}}
+function animZoom(px,py,k,keep){
+  stopAnim();const w=s2w(px,py),s0=V.s,s1=clamp(s0*k,0.0002,400),t0=performance.now(),dur=matchMedia('(prefers-reduced-motion: reduce)').matches?0:240;
+  if(!keep)setFollow(false);
+  const step=now=>{const t=dur?Math.min(1,(now-t0)/dur):1,ee=1-Math.pow(1-t,3);V.s=s0*Math.pow(s1/s0,ee);V.cx=w[0]-(px-W/2)/V.s;V.cy=w[1]+(py-H/2)/V.s;dirty();zAnim=t<1?requestAnimationFrame(step):null;};
+  zAnim=requestAnimationFrame(step);
+}
+function zoomBtn(k){if(V.follow&&G.last&&G.last.xy){const [px,py]=w2s(G.last.xy[0],G.last.xy[1]);animZoom(px,py,k,true);}else animZoom(W/2,(H-dockH())/2,k);}
+$('#bZin').onclick=()=>zoomBtn(2);$('#bZout').onclick=()=>zoomBtn(0.5);
 function hitTest(px,py){
   let best=null,bd=1e9;
   for(const f of P.features){const L=layerOf(f);if(!L||!L.vis)continue;const xy=fxy(f).map(p=>w2s(p[0],p[1]));
@@ -670,13 +711,13 @@ const BASES={
   ref:{name:'Referência',sub:'Limites, cidades, rios e rodovias · sem internet'},
   none:{name:'Sem fundo',sub:'Só a grade métrica'}
 };
-const TILES={mem:new Map(),queue:[],active:0,blocked:false,warned:false,net:false};
+const TILES={mem:new Map(),queue:[],active:0,blocked:false,down:false,warned:false,ok:0,fail:0};
 const tileKey=(p,z,x,y)=>`${p}/${z}/${x}/${y}`;
 const lon2tx=(lon,z)=>(lon+180)/360*2**z;
 const lat2ty=(lat,z)=>{const r=clamp(lat,-85,85)*D2R;return (1-Math.log(Math.tan(r)+1/Math.cos(r))/Math.PI)/2*2**z;};
 const tx2lon=(x,z)=>x/2**z*360-180;
 const ty2lat=(y,z)=>R2D*Math.atan(Math.sinh(Math.PI-2*Math.PI*y/2**z));
-function effBase(){const b=BASES[S.base]?S.base:'sat';return BASES[b].url&&TILES.blocked?'ref':b;}
+function effBase(){const b=BASES[S.base]?S.base:'sat';return BASES[b].url&&(TILES.blocked||TILES.down)?'ref':b;}
 function viewLL(){
   const pts=[[0,0],[W,0],[0,H],[W,H],[W/2,0],[W/2,H],[W/2,H/2]].map(([px,py])=>{const w=s2w(px,py);return fromXY(w[0],w[1]);});
   if(pts.some(p=>!isFinite(p[0])||!isFinite(p[1])))return null;
@@ -705,30 +746,38 @@ function getTile(id,z,x,y){const k=tileKey(id,z,x,y),e=TILES.mem.get(k);if(e){e.
   TILES.mem.set(k,{img:null,t:Date.now()});TILES.queue.push([k,id,z,x,y]);setTimeout(pump,0);return null;}
 function pump(){while(TILES.active<6&&TILES.queue.length){const j=TILES.queue.pop();TILES.active++;loadTile(...j).finally(()=>{TILES.active--;pump();});}}
 const tileURL=(id,z,x,y)=>BASES[id].url.replace('{z}',z).replace('{x}',x).replace('{y}',y);
+const tilesUsable=()=>!TILES.blocked&&!TILES.down&&navigator.onLine!==false;
 async function fetchTile(id,z,x,y){
-  if(TILES.blocked||navigator.onLine===false)return null;
-  try{const r=await fetch(tileURL(id,z,x,y),{mode:'cors',credentials:'omit'});if(!r.ok)return null;const b=await r.blob();if(!b.size||!/^image\//.test(b.type||'image/'))return null;TILES.net=true;return b;}catch(e){return null;}
+  if(!tilesUsable())return null;
+  try{const r=await fetch(tileURL(id,z,x,y),{mode:'cors',credentials:'omit'});if(!r.ok)return null;const b=await r.blob();if(!b.size||!/^image\//.test(b.type||'image/'))return null;return b;}catch(e){return null;}
 }
+function imgTile(url){return new Promise(res=>{const im=new Image();let done=false;const fin=v=>{if(!done){done=true;res(v);}};im.onload=()=>fin(im);im.onerror=()=>fin(null);setTimeout(()=>fin(null),15000);im.src=url;});}
 async function loadTile(k,id,z,x,y){
   const e=TILES.mem.get(k);if(!e)return;
-  let blob=await IDB.tget(k);
-  if(!blob){blob=await fetchTile(id,z,x,y);if(blob)IDB.tput(k,blob);}
-  if(blob){try{e.img=await decodeBlob(blob);if(VIEW==='map')dirty();}catch(_){TILES.mem.delete(k);}}
-  else setTimeout(()=>{if(TILES.mem.get(k)===e&&!e.img)TILES.mem.delete(k);},20000);
+  let img=null;const cached=await IDB.tget(k);
+  if(cached){try{img=await decodeBlob(cached);}catch(_){}}
+  if(!img&&tilesUsable()){const b=await fetchTile(id,z,x,y);if(b){IDB.tput(k,b);try{img=await decodeBlob(b);}catch(_){}}}
+  if(!img&&tilesUsable())img=await imgTile(tileURL(id,z,x,y)); // servidor sem CORS: exibe, mas não guarda offline
+  if(img){if(TILES.mem.get(k)!==e){try{img.close&&img.close();}catch(_){}return;}e.img=img;TILES.ok++;TILES.fail=0;if(VIEW==='map')dirty();}
+  else{TILES.fail++;if(TILES.fail>=8&&!TILES.ok&&!TILES.down){TILES.down=true;baseUnavailable('Não foi possível carregar o mapa de fundo (sem internet ou bloqueado). Mostrando a base de referência offline.');}
+    setTimeout(()=>{if(TILES.mem.get(k)===e&&!e.img)TILES.mem.delete(k);},20000);}
   if(TILES.mem.size>450){[...TILES.mem.entries()].filter(([,v])=>v.img).sort((a,b)=>a[1].t-b[1].t).slice(0,120).forEach(([kk,v])=>{try{v.img.close&&v.img.close();}catch(_){}TILES.mem.delete(kk);});}
 }
 function decodeBlob(b){if(window.createImageBitmap)return createImageBitmap(b);return new Promise((res,rej)=>{const u=URL.createObjectURL(b),im=new Image();im.onload=()=>{res(im);};im.onerror=rej;im.src=u;});}
+function baseUnavailable(msg){TILES.mem.clear();TILES.queue=[];dirty();updAttr();updBaseChip();if(!TILES.warned){TILES.warned=true;toast(msg);}}
+function retryTiles(){if(TILES.blocked)return;TILES.down=false;TILES.fail=0;TILES.ok=0;TILES.mem.clear();TILES.queue=[];updBaseChip();updAttr();dirty();}
+window.addEventListener('online',retryTiles);
+function updBaseChip(){const c=$('#baseChip');if(!c)return;const off=!!BASES[S.base].url&&(TILES.blocked||TILES.down);c.hidden=!off;}
 document.addEventListener('securitypolicyviolation',e=>{
-  if(/arcgisonline|openstreetmap|opentopomap/.test(e.blockedURI||'')&&!TILES.net){TILES.blocked=true;TILES.mem.clear();TILES.queue=[];dirty();updAttr();
-    let seen=false;try{seen=localStorage.getItem('marco.blk')==='1';localStorage.setItem('marco.blk','1');}catch(_){}
-    if(!TILES.warned&&!seen){TILES.warned=true;toast('Esta janela do claude.ai bloqueia mapas da internet. Mostrando a base de referência offline. Veja “Mapa base” para usar satélite.');}}
+  if(/arcgisonline|openstreetmap|opentopomap/.test(e.blockedURI||'')&&!TILES.ok&&!TILES.blocked){TILES.blocked=true;
+    baseUnavailable('Esta janela do claude.ai bloqueia mapas da internet. Mostrando a base de referência offline.');}
 });
 /* salvar área para uso offline */
 async function saveArea(){
   const id=S.base,B=BASES[id];
   if(!B.url){toast('Escolha Satélite ou Topográfico para salvar a área.',{err:true});return;}
   if(!B.save){toast('A política do OpenStreetMap não permite baixar áreas em lote. Os trechos que você visualiza ficam guardados automaticamente.',{err:true});return;}
-  if(TILES.blocked){toast('Mapas da internet estão bloqueados nesta janela.',{err:true});return;}
+  if(TILES.blocked||TILES.down){toast('O mapa de fundo não está acessível agora. Verifique a conexão.',{err:true});return;}
   if(navigator.onLine===false){toast('Sem conexão. Conecte-se para salvar a área.',{err:true});return;}
   const v=viewLL();if(!v)return;const z0=tileZoom(v,B.max),jobs=[];let zMax=z0;
   for(let z=z0;z<=Math.min(z0+3,B.max);z++){const n=(Math.floor(lon2tx(v[2],z))-Math.floor(lon2tx(v[0],z))+1)*(Math.floor(lat2ty(v[1],z))-Math.floor(lat2ty(v[3],z))+1);if(jobs.length+n>600)break;zMax=z;
@@ -746,9 +795,10 @@ const REF={st:'idle',d:null};
 async function loadRef(){
   if(REF.st!=='idle')return;REF.st='loading';
   try{
-    if(!('DecompressionStream' in window))throw new Error('Este navegador não descompacta a base embutida.');
     const b64=$('#refData').textContent.trim(),bin=atob(b64),u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);
-    const txt=await new Response(new Blob([u]).stream().pipeThrough(new DecompressionStream('gzip'))).text(),R=JSON.parse(txt);
+    let txt;if('DecompressionStream' in window){txt=await new Response(new Blob([u]).stream().pipeThrough(new DecompressionStream('gzip'))).text();}
+    else{await new Promise((res,rej)=>{const sc=document.createElement('script');sc.src='https://cdn.jsdelivr.net/npm/pako@2.1.0/dist/pako_inflate.min.js';sc.onload=res;sc.onerror=()=>rej(new Error('Navegador antigo: não foi possível abrir a base embutida.'));document.head.appendChild(sc);});txt=pako.inflate(u,{to:'string'});}
+    const R=JSON.parse(txt);
     const prep=arr=>arr.map(([a,f])=>{const ll=new Float64Array(f.length);let x=0,y=0,bb=[1e9,1e9,-1e9,-1e9];for(let i=0;i<f.length;i+=2){x+=f[i];y+=f[i+1];const lo=x/1e4,la=y/1e4;ll[i]=lo;ll[i+1]=la;if(lo<bb[0])bb[0]=lo;if(la<bb[1])bb[1]=la;if(lo>bb[2])bb[2]=lo;if(la>bb[3])bb[3]=la;}return {a,ll,bb,xy:null,zk:null};});
     REF.d={br:prep(R.br),uf:prep(R.uf),mun:prep(R.mun),riv:prep(R.riv),rd:prep(R.rd),sed:R.sed.map(([n,x,y,c,uf])=>({n,lon:x/1e4,lat:y/1e4,cap:c,uf,xy:null,zk:null}))};
     REF.st='ok';dirty();
@@ -761,7 +811,7 @@ function drawRef(base){
   const onImg=base==='sat',street=base==='osm'||base==='topo';
   const inV=bb=>bb[2]>=v[0]&&bb[0]<=v[2]&&bb[3]>=v[1]&&bb[1]<=v[3]&&Math.abs((bb[0]+bb[2])/2-cmz)<22;
   const proj=L=>{if(L.zk!==zk){const ll=L.ll,xy=new Float64Array(ll.length);for(let i=0;i<ll.length;i+=2){const p=toXY(ll[i],ll[i+1]);xy[i]=p[0];xy[i+1]=p[1];}L.xy=xy;L.zk=zk;}return L.xy;};
-  const stroke=(arr,filt,styles)=>{ctx.beginPath();let any=false;for(const L of arr){if(filt&&!filt(L))continue;if(!inV(L.bb))continue;const xy=proj(L);ctx.moveTo(W/2+(xy[0]-V.cx)*V.s,H/2-(xy[1]-V.cy)*V.s);for(let i=2;i<xy.length;i+=2)ctx.lineTo(W/2+(xy[i]-V.cx)*V.s,H/2-(xy[i+1]-V.cy)*V.s);any=true;}
+  const stroke=(arr,filt,styles)=>{ctx.beginPath();let any=false;for(const L of arr){if(filt&&!filt(L))continue;if(!inV(L.bb))continue;const xy=proj(L),n=xy.length;let lx=W/2+(xy[0]-V.cx)*V.s,ly=H/2-(xy[1]-V.cy)*V.s;ctx.moveTo(lx,ly);for(let i=2;i<n;i+=2){const px=W/2+(xy[i]-V.cx)*V.s,py=H/2-(xy[i+1]-V.cy)*V.s;if(i<n-2&&Math.abs(px-lx)+Math.abs(py-ly)<1.5)continue;ctx.lineTo(px,py);lx=px;ly=py;}any=true;}
     if(!any)return;ctx.lineJoin='round';ctx.lineCap='round';for(const s of styles){ctx.setLineDash(s.dash||[]);ctx.lineWidth=s.w;ctx.strokeStyle=s.c;ctx.stroke();}ctx.setLineDash([]);};
   const dark=document.documentElement.dataset.theme==='dark'||(S.theme==='auto'&&matchMedia('(prefers-color-scheme: dark)').matches)||S.battery;
   const halo=onImg?'rgba(0,0,0,.55)':null;
@@ -775,11 +825,11 @@ function drawRef(base){
   if(lim)stroke(REF.d.uf,null,halo?[{w:4,c:halo},{w:1.8,c:'#FFFFFF'}]:[{w:1.8,c:dark?'rgba(230,236,231,.6)':'rgba(28,42,36,.6)'}]);
   if(lim)stroke(REF.d.br,null,halo?[{w:4.5,c:halo},{w:2.2,c:'#FFFFFF'}]:[{w:2.2,c:dark?'rgba(230,236,231,.75)':'rgba(28,42,36,.75)'}]);
   // sedes municipais
-  if(wKm<1500){const occ=new Set(),txt=onImg?'#fff':COL.ink,hal=onImg?'rgba(0,0,0,.75)':COL.ground;ctx.font='600 12px Barlow,system-ui';ctx.textBaseline='middle';ctx.lineWidth=3.5;
+  if(wKm<1500){const placed=[],txt=onImg?'#fff':COL.ink,hal=onImg?'rgba(0,0,0,.75)':COL.ground;ctx.font='600 12px Barlow,system-ui';ctx.textBaseline='middle';ctx.lineWidth=3.5;
     const list=REF.d.sed.filter(s=>s.lon>=v[0]&&s.lon<=v[2]&&s.lat>=v[1]&&s.lat<=v[3]&&(s.cap||wKm<260));
     if(list.length<1500)for(const s of list.sort((a,b)=>b.cap-a.cap)){if(s.zk!==zk){s.xy=toXY(s.lon,s.lat);s.zk=zk;}const [sx,sy]=w2s(s.xy[0],s.xy[1]);
       ctx.beginPath();ctx.arc(sx,sy,s.cap?4.5:3,0,7);ctx.fillStyle=txt;ctx.fill();ctx.strokeStyle=hal;ctx.lineWidth=1.5;ctx.stroke();
-      if(s.cap||wKm<110){const key=Math.round(sx/90)+':'+Math.round(sy/22);if(occ.has(key))continue;occ.add(key);const label=s.n+(wKm>110?' ('+s.uf+')':'');ctx.lineWidth=3.5;ctx.strokeStyle=hal;ctx.strokeText(label,sx+7,sy);ctx.fillStyle=txt;ctx.fillText(label,sx+7,sy);}}}
+      if(s.cap||wKm<110){const label=s.n+(wKm>110?' ('+s.uf+')':''),lw=ctx.measureText(label).width,r=[sx+5,sy-9,sx+9+lw,sy+9];if(placed.some(q=>r[0]<q[2]&&r[2]>q[0]&&r[1]<q[3]&&r[3]>q[1]))continue;placed.push(r);ctx.lineWidth=3.5;ctx.strokeStyle=hal;ctx.strokeText(label,sx+7,sy);ctx.fillStyle=txt;ctx.fillText(label,sx+7,sy);}}}
 }
 /* imagens georreferenciadas (GeoTIFF, PNG/JPG + world file) */
 let OVL=[];
@@ -1103,15 +1153,16 @@ function showMap(){if(VIEW!=='map')go('map');}
 $('#bFollow').onclick=()=>{setFollow(true);if(G.last)centerOn(...G.last.xy);else toast('Sem posição GNSS ainda.');};
 $('#bFit').onclick=()=>{const b=bbox();if(b)fitTo(b);else toast('Nenhuma feição para mostrar ainda.');};
 $('#bLayers').onclick=()=>mapSheet();
+$('#baseChip').onclick=()=>mapSheet();
 function mapSheet(){
   const draw=async b=>{
     const tc=await IDB.tcount();
     b.innerHTML=`<div class="bases">${Object.entries(BASES).map(([k,B])=>`<button class="basebtn" data-b="${k}" aria-pressed="${S.base===k}"><strong>${B.name}</strong><small>${B.sub}</small></button>`).join('')}</div>
      ${TILES.blocked&&BASES[S.base].url?`<p class="warn">Dentro do claude.ai o navegador bloqueia mapas da internet por segurança, então a base de referência offline está sendo usada. Para satélite, ruas ou topográfico, abra o app fora do claude.ai: publique o arquivo HTML em um endereço https (GitHub Pages, Netlify Drop) e acesse pelo celular.</p>`:''}
-     ${!TILES.blocked&&BASES[S.base].url&&navigator.onLine===false?`<p class="warn">Sem conexão: aparecem só as áreas já vistas ou salvas.</p>`:''}
+     ${!TILES.blocked&&BASES[S.base].url&&(TILES.down||navigator.onLine===false)?`<p class="warn">${navigator.onLine===false?'Sem conexão: aparecem só as áreas já vistas ou salvas.':'O servidor do mapa de fundo não respondeu. A base de referência offline está sendo usada.'} <button class="btn" id="rtT" style="margin-top:8px;width:100%">Tentar de novo</button></p>`:''}
      <div class="list" style="margin-top:12px">
       <label class="switch"><span><span>Limites, cidades, rios e rodovias</span><small>Base embutida, funciona sem internet. Generalizada: não use para demarcação.</small></span><input type="checkbox" id="refOn" ${S.refOn?'checked':''}></label>
-      ${BASES[S.base].url&&!TILES.blocked?`<button class="item" id="svA"><span class="t"><strong>Salvar área visível para uso offline</strong><small>${tc} blocos guardados neste aparelho${BASES[S.base].save?'':' · indisponível para OpenStreetMap'}</small></span></button>`:''}
+      ${BASES[S.base].url&&!TILES.blocked&&!TILES.down?`<button class="item" id="svA"><span class="t"><strong>Salvar área visível para uso offline</strong><small>${tc} blocos guardados neste aparelho${BASES[S.base].save?'':' · indisponível para OpenStreetMap'}</small></span></button>`:''}
       ${tc?`<button class="item" id="clT"><span class="t"><strong style="color:var(--poor)">Apagar mapas salvos</strong><small>Libera espaço (${tc} blocos)</small></span></button>`:''}
      </div>
      <h3 class="sh">Imagens georreferenciadas</h3>
@@ -1119,7 +1170,8 @@ function mapSheet(){
      <button class="btn" id="addI" style="width:100%;margin-top:8px">+ GeoTIFF ou PNG/JPG com .pgw/.jgw</button>
      <h3 class="sh">${t('Camadas')} do levantamento</h3>
      <div class="list">${P.layers.map(l=>`<label class="switch"><span style="display:flex;align-items:center;gap:10px"><span class="sw" style="width:14px;height:14px;border-radius:4px;background:${l.color}"></span><span><strong style="font-weight:600">${esc(l.name)}</strong><small>${P.features.filter(f=>f.l===l.id).length} feições</small></span></span><input type="checkbox" data-id="${l.id}" ${l.vis?'checked':''}></label>`).join('')}</div>`;
-    $$('[data-b]',b).forEach(x=>x.onclick=()=>{S.base=x.dataset.b;saveS();TILES.queue=[];updAttr();dirty();draw(b);});
+    $$('[data-b]',b).forEach(x=>x.onclick=()=>{S.base=x.dataset.b;saveS();retryTiles();updAttr();updBaseChip();dirty();draw(b);});
+    const rt=$('#rtT',b);if(rt)rt.onclick=()=>{retryTiles();closeSheet();toast('Tentando carregar o mapa de fundo…');};
     $('#refOn',b).onchange=e=>{S.refOn=e.target.checked;saveS();updAttr();dirty();};
     const sv=$('#svA',b);if(sv)sv.onclick=()=>saveArea();
     const cl=$('#clT',b);if(cl)cl.onclick=async()=>{if(await ask('Apagar mapas salvos?','As áreas guardadas para uso offline serão removidas. Elas voltam a ser baixadas quando você navegar com internet.',[[t('Cancelar'),'no'],['Apagar','yes','primary']])!=='yes')return;await IDB.tclear();TILES.mem.clear();dirty();toast('Mapas salvos apagados');};
@@ -1820,8 +1872,8 @@ function guide(i){
   applyTheme();applyI18n();resize();
   new ResizeObserver(()=>{document.documentElement.style.setProperty('--dockH',dockH()+'px');}).observe($('#dock'));
   window.addEventListener('resize',resize);
-  if(!V.ready){const b=bbox();if(b){V.ready=true;fitTo(b);setFollow(true);}else{V.ready=true;const c=fromXY(500000,8250000);V.cx=500000;V.cy=8250000;V.s=1;}}
-  applyUI();updAttr();gStart();wake();dirty();
+  if(!V.ready){const b=bbox();if(b){V.ready=true;fitTo(b);setFollow(true);}else{V.ready=true;const c=fromXY(500000,8250000);V.cx=500000;V.cy=8250000;V.s=0.0005;}}
+  applyUI();updAttr();updBaseChip();gStart();wake();dirty();
   if(!S.seenGuide)guide(0);
   initSync();
 })();
